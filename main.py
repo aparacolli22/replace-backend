@@ -25,10 +25,13 @@ from pydantic import BaseModel
 DB_PATH = os.environ.get("DB_PATH", "/data/dashboard.db")
 API_KEY = os.environ.get("API_KEY")  # da impostare come variabile d'ambiente sul server
 
+# diagnosi temporanea: se API_KEY non arriva, elenca quali variabili
+# SONO effettivamente visibili al processo, per capire cosa succede
 if not API_KEY:
+    visible_vars = sorted(k for k in os.environ.keys() if not k.startswith("RAILWAY_"))
     raise RuntimeError(
-        "Variabile d'ambiente API_KEY non impostata - e' la password che protegge "
-        "il database, va scelta e configurata prima di avviare il server."
+        "Variabile d'ambiente API_KEY non impostata. "
+        f"Variabili visibili al processo (nomi soltanto): {visible_vars}"
     )
 
 app = FastAPI(title="REPLACE backend")
